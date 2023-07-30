@@ -1,0 +1,69 @@
+.banner-section {
+   margin-top: -50px;
+   background-image: url('images/tour-banner.jpg');
+   background-position: center;
+   background-size: cover;
+   background-repeat: no-repeat;
+   height: 400px;
+   position: relative;
+}
+.banner-section::before {
+   content: '';
+   position: absolute;
+   inset: 0;
+   background-color: rgba(0,0,0,.45);
+}
+
+.banner-title {
+   position: relative;
+   color: var(--white-color);
+   font-size: 2.5rem;
+   position: absolute;
+   left: 50%;
+   top: 50%;
+   transform: translate(-50%, -50%);
+}
+
+.pagination-tour {
+   display: flex;
+   justify-content: center;
+   margin-top: 30px;
+}
+.pagination-tour .ant-pagination-item {
+   background: #eee;
+   border-radius: 50%;
+   overflow: hidden;
+}
+
+.pagination-tour .ant-pagination-item a:hover {
+   background: orange;
+}
+.pagination-tour .ant-pagination-item-active {
+   border-color: var(--secondary-color);
+}
+.pagination-tour .ant-pagination-item-active a {
+   background-color: var(--secondary-color);
+   color: #fff;
+}
+.pagination-tour .ant-pagination-item-active a:hover {
+   background-color: var(--secondary-color);
+   color: white;
+}
+.pagination-tour .ant-pagination-item-active:hover {
+   border-color: var(--secondary-color);
+}
+
+.pagination-tour .ant-pagination-prev,
+.pagination-tour .ant-pagination-next {
+   border-radius: 50%;
+   overflow: hidden;
+}
+.pagination-tour .ant-pagination-prev:hover,
+.pagination-tour .ant-pagination-next:hover {
+   background: orange;
+}
+
+.pagination-tour .ant-pagination-disabled:hover {
+   /* display: none; */
+   background-color: transparent;
+}
