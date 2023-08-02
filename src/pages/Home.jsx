@@ -3,22 +3,29 @@ import { Col, Row, Form, Input, Button } from "antd";
 
 import axiosClient from "../axios/axiosClient";
 import Subtitle from "../components/Subtitle/Subtitle";
-import TourCard from "../components/TourCard/TourCard";
+import TourCard from "../components/Tours/TourCard";
 import Carousel from "../components/Slick/Carousel";
-
-import { BsSearch } from "react-icons/bs";
-import { HiOutlineLocationMarker } from "react-icons/hi";
-import { MdLocalAirport } from "react-icons/md";
-import { AiOutlineUsergroupAdd } from "react-icons/ai";
+import SearchBar from "../components/SearchBar";
+import NewsletterSection from "../components/NewsletterSection";
 
 const Home = () => {
    const [tours, setTours] = useState([]);
+   const [status, setStatus] = useState({
+      error: false,
+      loading: false,
+   });
 
    useEffect(() => {
       (async function () {
-         const response = await axiosClient.get("/tours");
-         console.log(response.data.data);
-         setTours(response.data.data);
+         try {
+            setStatus({ error: false, loading: true });
+
+            const response = await axiosClient.get("/tours");
+            setTours(response.data.data);
+            setStatus({ error: false, loading: false });
+         } catch (error) {
+            setStatus({ error: true, loading: false });
+         }
       })();
    }, []);
 
@@ -28,7 +35,7 @@ const Home = () => {
          <section className="hero-section">
             <div className="container">
                <Row gutter={24}>
-                  <Col span={12} className="hero-content">
+                  <Col span={12} lg={12} md={24} xs={24} className="hero-content">
                      <div className="hero-subtitle">
                         <Subtitle>Know Before You Go</Subtitle>
                         <img src="/images/world.png" alt="" />
@@ -47,70 +54,37 @@ const Home = () => {
                         the cultural centers in Hanoi and Saigon.
                      </p>
                   </Col>
-                  <Col span={4}>
+                  <Col span={4} className="hidden-col-md">
                      <div className="hero-image" style={{ marginTop: 16 }}>
                         <img src="/images/hero-img01.jpg" alt="" />
                      </div>
                   </Col>
-                  <Col span={4}>
+                  <Col span={4} lg={4} md={24} xs={24}>
                      <div className="hero-image" style={{ marginTop: 56 }}>
                         <video src="/images/hero-video.mp4" alt="" controls />
                      </div>
                   </Col>
-                  <Col span={4}>
+                  <Col span={4} className="hidden-col-md">
                      <div className="hero-image" style={{ marginTop: 80 }}>
                         <img src="/images/hero-img01.jpg" alt="" />
                      </div>
                   </Col>
                </Row>
-               <div className="search-bar">
-                  <form className="search-bar-form">
-                     <div className="form-group">
-                        <span>
-                           <HiOutlineLocationMarker className="form-icon" />
-                        </span>
-                        <div className="form-input">
-                           <h4>Location</h4>
-                           <input type="text" placeholder="Where are you going?" />
-                        </div>
-                     </div>
-                     <div className="form-group">
-                        <span>
-                           <MdLocalAirport className="form-icon" />
-                        </span>
-                        <div className="form-input">
-                           <h4>Distance</h4>
-                           <input type="number" placeholder="Distance k/m" />
-                        </div>
-                     </div>
-                     <div className="form-group">
-                        <span>
-                           <AiOutlineUsergroupAdd className="form-icon" />
-                        </span>
-                        <div className="form-input">
-                           <h4>Max people</h4>
-                           <input type="number" placeholder="0" />
-                        </div>
-                     </div>
 
-                     <button type="submit" className="btn-search-submit">
-                        <BsSearch />
-                     </button>
-                  </form>
-               </div>
+               <SearchBar />
             </div>
          </section>
 
          {/* ---- Service ---- */}
          <section className="service-section">
             <div className="container">
-               <Row gutter={24}>
-                  <Col span={6}>
+               <Row gutter={[24, 24]}>
+                  <Col span={6} lg={6} md={24} xs={24}>
                      <h5 className="service-subtitle">What we serve</h5>
                      <h2 className="service-title">We offer our best services</h2>
                   </Col>
 
-                  <Col span={6}>
+                  <Col span={6} lg={6} md={12} xs={24}>
                      <div className="service-card">
                         <div className="service-image">
                            <img src="images/service-item-1.png" alt="" />
@@ -120,7 +94,7 @@ const Home = () => {
                      </div>
                   </Col>
 
-                  <Col span={6}>
+                  <Col span={6} lg={6} md={12} xs={24}>
                      <div className="service-card">
                         <div className="service-image">
                            <img src="images/service-item-1.png" alt="" />
@@ -130,7 +104,7 @@ const Home = () => {
                      </div>
                   </Col>
 
-                  <Col span={6}>
+                  <Col span={6} lg={6} md={12} xs={24}>
                      <div className="service-card">
                         <div className="service-image">
                            <img src="images/service-item-1.png" alt="" />
@@ -152,14 +126,34 @@ const Home = () => {
                </div>
 
                <Row gutter={[24, 24]}>
-                  {tours.length > 0 ? (
+                  {status.error ? (
+                     <h2
+                        style={{
+                           textAlign: "center",
+                           fontSize: 26,
+                           fontWeight: 500,
+                           padding: "0 12px",
+                        }}
+                     >
+                        Fetching data is Error...
+                     </h2>
+                  ) : status.loading ? (
+                     <h2
+                        style={{
+                           textAlign: "center",
+                           fontSize: 26,
+                           fontWeight: 500,
+                           padding: "0 12px",
+                        }}
+                     >
+                        Loading...
+                     </h2>
+                  ) : (
                      tours.map((tour) => (
-                        <Col span={6} key={tour._id}>
+                        <Col span={6} lg={6} md={8} sm={12} xs={24} key={tour._id}>
                            <TourCard tourData={tour} />
                         </Col>
                      ))
-                  ) : (
-                     <h2>Error</h2>
                   )}
                </Row>
             </div>
@@ -168,8 +162,8 @@ const Home = () => {
          {/* ---- Experience ---- */}
          <section className="experience-section">
             <div className="container">
-               <Row gutter={24}>
-                  <Col span={12}>
+               <Row gutter={[24, 24]}>
+                  <Col span={12} lg={12} md={24} xs={24}>
                      <div className="experience-content">
                         <Subtitle>Experience</Subtitle>
                         <h2 className="experience-title">
@@ -194,7 +188,7 @@ const Home = () => {
                         </div>
                      </div>
                   </Col>
-                  <Col span={12}>
+                  <Col span={12} lg={12} md={24} xs={24}>
                      <div className="experience-img">
                         <img src="images/experience.png" alt="" />
                      </div>
@@ -210,8 +204,8 @@ const Home = () => {
                   <Subtitle>Gallery</Subtitle>
                   <h2>Visit our customers tour gallery</h2>
                </div>
-               <Row gutter={16}>
-                  <Col span={6}>
+               <Row gutter={[16, 16]}>
+                  <Col span={6} lg={6} md={12} xs={24}>
                      <Row gutter={[16, 16]}>
                         <Col span={24}>
                            <div className="gallery-item">
@@ -225,7 +219,7 @@ const Home = () => {
                         </Col>
                      </Row>
                   </Col>
-                  <Col span={6}>
+                  <Col span={6} lg={6} md={12} xs={24}>
                      <Row gutter={[16, 16]}>
                         <Col span={24}>
                            <div className="gallery-item">
@@ -239,7 +233,7 @@ const Home = () => {
                         </Col>
                      </Row>
                   </Col>
-                  <Col span={6}>
+                  <Col span={6} lg={6} md={12} xs={24}>
                      <Row gutter={[16, 16]}>
                         <Col span={24}>
                            <div className="gallery-item">
@@ -253,7 +247,7 @@ const Home = () => {
                         </Col>
                      </Row>
                   </Col>
-                  <Col span={6}>
+                  <Col span={6} lg={6} md={12} xs={24}>
                      <Row gutter={[16, 16]}>
                         <Col span={24}>
                            <div className="gallery-item">
@@ -282,36 +276,8 @@ const Home = () => {
             </div>
          </section>
 
-         {/* ---- News lLetter ---- */}
-         <section className="newsletter-section">
-            <div className="container">
-               <Row gutter={24}>
-                  <Col span={12}>
-                     <h2 className="experience-title" style={{ marginTop: 0 }}>
-                        Subcribe DUONG now to get <br /> useful traveling information
-                     </h2>
-                     <Form className="subscribe-form" layout="inline">
-                        <Form.Item className="subscribe-form-input">
-                           <Input placeholder="Enter your email" />
-                        </Form.Item>
-                        <Form.Item className="subscribe-form-button">
-                           <Button type="primary" htmlType="submit">
-                              Submit
-                           </Button>
-                        </Form.Item>
-                     </Form>
-                     <p style={{ fontSize: "16px", lineHeight: 1.5, fontWeight: 400 }}>
-                        WE SO <br /> CHIPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
-                     </p>
-                  </Col>
-                  <Col span={12}>
-                     <div className="newsletter-image">
-                        <img src="images/male-tourist.png" alt="" />
-                     </div>
-                  </Col>
-               </Row>
-            </div>
-         </section>
+         {/* ---- News Letter ---- */}
+         <NewsletterSection />
       </>
    );
 };

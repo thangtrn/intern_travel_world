@@ -92,8 +92,16 @@
    line-height: 1.2;
 }
 
-/* .auth-form .ant-form-item-explain-error {
-   font-size: 14px;
-   line-height: 1.2;
-   margin-bottom: 10px;
-} */
+@media screen and (max-width: 767px) {
+   .auth-image {
+      display: none;
+   }
+   .auth-content {
+      width: 100%;
+      border-radius: 8px;
+      padding: 40px 20px;
+   }
+   .auth-container {
+      border-radius: 8px;
+   }
+}

@@ -60,12 +60,13 @@
    box-shadow: 0 48px 100px 0 rgba(17,12,46,.15);
    margin-top: 20px;
    padding: 14px 16px;
-   width: max-content;
+   width: fit-content;
 }
 .search-bar-form {
    display: flex;
    align-items: center;
-   gap: 1.5rem;
+   gap: 0 1.5rem;
+   flex-wrap: wrap;
 }
 .form-group {
    display: flex;
@@ -189,12 +190,14 @@
    font-size: 1.2rem;
    margin-top: 1rem;
    margin-bottom: 1rem;
+   overflow: hidden;
 }
 .experience-counter {
    margin-top: 1.6rem;
    display: flex;
    align-items: center;
-   gap: 3rem;
+   gap: 16px 3rem;
+   flex-wrap: wrap;
 }
 
 .experience-counter-item span{
@@ -243,6 +246,7 @@
 }
 .gallery-item:hover {
    transform: scale(1.1);
+   z-index: 100;
 }
 .gallery-item img {
    display: block;
@@ -303,6 +307,7 @@
    box-shadow: 0 48px 100px 0 rgba(17,12,46,.15);
    border-radius: 6px;
    border: 1px solid var(--secondary-color);
+   width: 100%;
    max-width: 400px;
 }
 .subscribe-form-input {
@@ -338,3 +343,40 @@
    object-fit: cover;
 }
 /* -------- Tours -------- */
+
+
+@media screen and (max-width: 992px) {
+   .hidden-col-md {
+      display: none;
+   }
+   .search-bar {
+      width: 100%;
+      padding: 20px;
+   }
+   .search-bar-form {
+      /* flex-direction: column; */
+      gap: 10px 0;
+      flex-wrap: wrap;
+   }
+   .form-group {
+      width: 100%;
+   }
+   .search-bar-form .form-group {
+      padding-bottom: 10px;
+      border-right: none;
+      border-bottom: 2px solid #ddd;
+   }
+   .search-bar-form .form-input {
+      width: 100%;
+   }
+   .form-input input {
+      width: 100%;
+   }
+   .search-bar-form .form-group:nth-child(3) {
+      width: calc(100% - 50px);
+      
+   }
+   .btn-search-submit {
+      margin-left: auto;
+   }
+}

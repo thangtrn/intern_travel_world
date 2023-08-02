@@ -1,11 +1,31 @@
-import React from "react";
+import React, { useContext } from "react";
 import AppAuthLayout from "../layout/AppAuthLayout";
 import { Button, Form, Input, Space } from "antd";
+import { toast } from "react-toastify";
+import axiosClient from "../axios/axiosClient";
+import { AuthContext } from "../context/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+   const { setAuth } = useContext(AuthContext);
+   const navigate = useNavigate();
+
+   const handleFinish = async (value) => {
+      try {
+         const result = await axiosClient.post("/auth/login", value);
+         setAuth(result.data.data);
+         localStorage.setItem("auth", JSON.stringify(result.data.data));
+         navigate(-1, { replace: true });
+         toast.success("Login successful.");
+      } catch (error) {
+         console.log(error);
+         toast.error(error?.response?.data?.message);
+      }
+   };
+
    return (
       <AppAuthLayout>
-         <Form className="auth-form" autoComplete="off">
+         <Form className="auth-form" onFinish={handleFinish}>
             <Form.Item
                name="email"
                rules={[
@@ -28,10 +48,11 @@ const Login = () => {
                   },
                   { whitespace: true },
                ]}
+               hasFeedback
             >
                <Input.Password placeholder="Password" />
             </Form.Item>
-            <Form.Item>
+            <Form.Item shouldUpdate>
                <Button className="form-submit" htmlType="submit" block>
                   Login
                </Button>

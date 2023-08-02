@@ -1,23 +1,48 @@
 import React, { useEffect, useState } from "react";
-import { HiOutlineLocationMarker } from "react-icons/hi";
-import { MdLocalAirport } from "react-icons/md";
-import { AiOutlineUsergroupAdd } from "react-icons/ai";
-import { BsSearch } from "react-icons/bs";
+
 import axiosClient from "../axios/axiosClient";
 import Subtitle from "../components/Subtitle/Subtitle";
 import { Button, Col, Form, Input, Pagination, Row, Space } from "antd";
-import TourCard from "../components/TourCard/TourCard";
+import TourCard from "../components/Tours/TourCard";
+import SearchBar from "../components/SearchBar";
+import NewsletterSection from "../components/NewsletterSection";
 
 const Tours = () => {
    const [tours, setTours] = useState([]);
+   const [pagination, setPagination] = useState(1);
+   const [totalItem, setTotalItem] = useState(0);
+
+   const [status, setStatus] = useState({
+      error: false,
+      loading: false,
+   });
 
    useEffect(() => {
       (async function () {
-         const response = await axiosClient.get("/tours");
-         console.log(response.data.data);
-         setTours(response.data.data);
+         try {
+            setStatus({ error: false, loading: true });
+
+            const tours = await axiosClient.get(`/tours?page=${pagination - 1}`);
+
+            setTours(tours.data.data);
+            setStatus({ error: false, loading: false });
+         } catch (error) {
+            setStatus({ error: true, loading: false });
+         }
+      })();
+   }, [pagination]);
+
+   useEffect(() => {
+      (async function () {
+         const result = await axiosClient.get("/tours/search/getTourCount");
+         let count = result.data.data;
+         setTotalItem(count);
       })();
    }, []);
+
+   const handlePaginationChange = (pageNumber) => {
+      setPagination(pageNumber);
+   };
 
    return (
       <>
@@ -29,41 +54,7 @@ const Tours = () => {
          {/* ---- search bar ----  */}
          <section>
             <div className="container">
-               <div className="search-bar">
-                  <form className="search-bar-form">
-                     <div className="form-group">
-                        <span>
-                           <HiOutlineLocationMarker className="form-icon" />
-                        </span>
-                        <div className="form-input">
-                           <h4>Location</h4>
-                           <input type="text" placeholder="Where are you going?" />
-                        </div>
-                     </div>
-                     <div className="form-group">
-                        <span>
-                           <MdLocalAirport className="form-icon" />
-                        </span>
-                        <div className="form-input">
-                           <h4>Distance</h4>
-                           <input type="number" placeholder="Distance k/m" />
-                        </div>
-                     </div>
-                     <div className="form-group">
-                        <span>
-                           <AiOutlineUsergroupAdd className="form-icon" />
-                        </span>
-                        <div className="form-input">
-                           <h4>Max people</h4>
-                           <input type="number" placeholder="0" />
-                        </div>
-                     </div>
-
-                     <button type="submit" className="btn-search-submit">
-                        <BsSearch />
-                     </button>
-                  </form>
-               </div>
+               <SearchBar />
             </div>
          </section>
 
@@ -71,56 +62,50 @@ const Tours = () => {
          <section className="tours-section" style={{ paddingTop: 0 }}>
             <div className="container">
                <Row gutter={[24, 24]}>
-                  {tours.length > 0 ? (
+                  {status.error ? (
+                     <h2
+                        style={{
+                           textAlign: "center",
+                           fontSize: 26,
+                           fontWeight: 500,
+                           padding: "0 12px",
+                        }}
+                     >
+                        Fetching data is Error...
+                     </h2>
+                  ) : status.loading ? (
+                     <h2
+                        style={{
+                           textAlign: "center",
+                           fontSize: 26,
+                           fontWeight: 500,
+                           padding: "0 12px",
+                        }}
+                     >
+                        Loading...
+                     </h2>
+                  ) : (
                      tours.map((tour) => (
-                        <Col span={6} key={tour._id}>
+                        <Col span={6} lg={6} md={8} sm={12} xs={24} key={tour._id}>
                            <TourCard tourData={tour} />
                         </Col>
                      ))
-                  ) : (
-                     <h2>Error</h2>
                   )}
                </Row>
-               <Pagination
-                  className="pagination-tour"
-                  total={15}
-                  defaultCurrent={1}
-                  defaultPageSize={8}
-                  // onChange={handlePaginationChange}
-               />
+               {tours.length > 0 && (
+                  <Pagination
+                     className="pagination-tour"
+                     total={totalItem}
+                     defaultCurrent={1}
+                     defaultPageSize={8}
+                     onChange={handlePaginationChange}
+                  />
+               )}
             </div>
          </section>
 
          {/* ---- News lLetter ---- */}
-         <section className="newsletter-section">
-            <div className="container">
-               <Row gutter={24}>
-                  <Col span={12}>
-                     <h2 className="experience-title" style={{ marginTop: 0 }}>
-                        Subcribe DUONG now to get <br /> useful traveling information
-                     </h2>
-                     <Form className="subscribe-form" layout="inline">
-                        <Form.Item className="subscribe-form-input">
-                           <Input placeholder="Enter your email" />
-                        </Form.Item>
-                        <Form.Item className="subscribe-form-button">
-                           <Button type="primary" htmlType="submit">
-                              Submit
-                           </Button>
-                        </Form.Item>
-                     </Form>
-                     <p style={{ fontSize: "16px", lineHeight: 1.5, fontWeight: 400 }}>
-                        WE SO <br /> CHIPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
-                     </p>
-                  </Col>
-                  <Col span={12}>
-                     <div className="newsletter-image">
-                        <img src="images/male-tourist.png" alt="" />
-                     </div>
-                  </Col>
-               </Row>
-            </div>
-         </section>
+         <NewsletterSection />
       </>
    );
 };

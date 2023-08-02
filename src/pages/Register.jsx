@@ -1,13 +1,29 @@
 import React from "react";
 import AppAuthLayout from "../layout/AppAuthLayout";
 import { Button, Form, Input, Space } from "antd";
+import { toast } from "react-toastify";
+import axiosClient from "../axios/axiosClient";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+   const navigate = useNavigate();
+
+   const handleFinish = async (values) => {
+      try {
+         await axiosClient.post("/auth/register", values);
+         toast.success("Register successful.");
+         navigate("/login", { replace: true });
+      } catch (error) {
+         console.log(error);
+         toast.warning(error?.response?.data?.message);
+      }
+   };
+
    return (
       <AppAuthLayout type="register">
-         <Form className="auth-form">
+         <Form className="auth-form" onFinish={handleFinish}>
             <Form.Item
-               name="user"
+               name="username"
                rules={[
                   {
                      required: true,
@@ -40,6 +56,7 @@ const Register = () => {
                   },
                   { whitespace: true },
                ]}
+               hasFeedback
             >
                <Input.Password placeholder="Password" />
             </Form.Item>

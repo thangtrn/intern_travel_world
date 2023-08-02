@@ -21,12 +21,13 @@
 
 
 .btn {
+  display: inline-block;
   cursor: pointer;
   padding: 6px 12px;
-  font-size: 1.1rem;
+  font-size: 16px;
   color: var(--heading-color);
   font-weight: 400;
-  line-height: 1.5;
+  line-height: normal;
 }
 a.btn:hover {
   color: inherit;
@@ -38,6 +39,11 @@ a.btn:hover {
   padding: 9px 24px;
   color: var(--white-color);
   font-weight: 500;
+  height: fit-content;
+}
+.ant-btn-primary.btn-primary:hover {
+  color: var(--white-color);
+  background-color: var(--secondary-color)!important;
 }
 a.btn-primary:hover {
   color: var(--white-color);
@@ -52,7 +58,6 @@ a.btn-primary:hover {
   max-width: 1320px;
   padding: 0 12px;
 }
-
 
 @media (min-width: 576px) {
   .container {

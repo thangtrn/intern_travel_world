@@ -6,7 +6,7 @@ const AppAuthLayout = ({ children, type = "login" }) => {
    return (
       <div className="container">
          <Row justify="center">
-            <Col span={16}>
+            <Col span={16} lg={16} md={24} xs={24}>
                <div className="auth-container">
                   <div className="auth-image">
                      <img src="/images/auth.png" alt="" />
